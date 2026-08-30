@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoyageCraft AI — Your Personal AI Travel Concierge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <!-- Cinematic Ambient Twilight Canvas -->
+    <div class="page-bg">
+        <div class="cinematic-glow glow-1"></div>
+        <div class="cinematic-glow glow-2"></div>
+        <div class="cinematic-glow glow-3"></div>
+        <div class="film-vignette"></div>
+    </div>
+
+    <main class="app-container">
+
+        <!-- Header / Hero Section -->
+        <header class="hero-section">
+            <div class="badge">
+                <span class="pulse-dot"></span>
+                <span class="badge-text">✨ Meet Your AI Travel Team • Ready to plan your dream journey</span>
+            </div>
+
+            <h1>Plan Your Dream Trip in Seconds</h1>
+
+            <p class="hero-sub">
+                Tell us where you'd love to go. Our team of specialized AI travel guides will find real flight routes, discover cozy hotels, and build your personalized day-by-day vacation itinerary.
+            </p>
+        </header>
+
+        <!-- Travel Request Card -->
+        <section class="planner-card">
+            <div class="card-header">
+                <div class="card-header-text">
+                    <h2>Where are you dreaming of going?</h2>
+                    <p>Share your destination, dates, budget, or anything you'd like to experience:</p>
+                </div>
+
+                <div class="status-pill" id="systemStatus">
+                    <span class="status-dot"></span>
+                    <span id="statusText">5 Travel Guides Ready</span>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <textarea
+                    id="userInput"
+                    placeholder="e.g. Plan a memorable 7-day trip to Japan from Bangladesh including flights, boutique hotels in Tokyo and Kyoto, sightseeing, and local food spots under 2 lakhs..."
+                ></textarea>
+
+                <button id="sendBtn" onclick="sendMessage()">
+                    <span id="btnText">✨ Create My Trip</span>
+                    <span id="btnLoader" class="loader hidden"></span>
+                </button>
+            </div>
+
+            <!-- Friendly Trip Ideas -->
+            <div class="quick-prompts">
+                <span class="quick-label">💡 Popular trip ideas:</span>
+                <button type="button" onclick="setPrompt('Plan a wonderful 7 days Japan vacation from Bangladesh including flights to Tokyo, Kyoto bullet train, scenic hotels, and food spots under 2 lakhs.')">
+                    🌸 7 Days in Japan
+                </button>
+                <button type="button" onclick="setPrompt('Plan a 5 days Dubai trip from Dhaka with direct flights, luxury marina hotel, desert safari, and sightseeing.')">
+                    🏙️ 5 Days in Dubai
+                </button>
+                <button type="button" onclick="setPrompt('Plan a relaxing 7 days Thailand beach holiday from India with beachfront stays, island hopping, and food markets.')">
+                    🏖️ 7 Days in Thailand
+                </button>
+                <button type="button" onclick="setPrompt('Plan a romantic 4 days Paris getaway from London with flights or Eurostar, charming central hotels, and museum visits.')">
+                    🗼 4 Days in Paris
+                </button>
+                <button type="button" onclick="setPrompt('Show me international live flight route information and travel options worldwide.')">
+                    ✈️ Live Flights Info
+                </button>
+            </div>
+        </section>
+
+        <!-- Live Travel Team Progress Graph -->
+        <section id="pipelineSection" class="pipeline-section hidden">
+            <div class="pipeline-header">
+                <div class="pipeline-title-group">
+                    <span class="pipeline-icon">🧭</span>
+                    <h3>Your Travel Guides at Work</h3>
+                </div>
+                <span id="pipelineTimer" class="pipeline-timer">Time elapsed: 0.0s</span>
+            </div>
+
+            <div class="pipeline-flow">
+                <!-- Agent Node 0: Validator -->
+                <div class="agent-node" id="node-validator_agent" onclick="focusAgentCard('validator_agent')">
+                    <div class="node-icon">🧭</div>
+                    <div class="node-details">
+                        <div class="node-title">Trip Validator</div>
+                        <div class="node-sub">Checking route & intent</div>
+                    </div>
+                    <div class="node-badge" id="badge-validator_agent">Ready</div>
+                </div>
+
+                <div class="flow-arrow" id="arrow-1">➔</div>
+
+                <!-- Agent Node 1: Flight Finder -->
+                <div class="agent-node" id="node-flight_agent" onclick="focusAgentCard('flight_agent')">
+                    <div class="node-icon">✈️</div>
+                    <div class="node-details">
+                        <div class="node-title">Flight Finder</div>
+                        <div class="node-sub">Checking live flight routes</div>
+                    </div>
+                    <div class="node-badge" id="badge-flight_agent">Ready</div>
+                </div>
+
+                <div class="flow-arrow" id="arrow-2">➔</div>
+
+                <!-- Agent Node 2: Hotel Scout -->
+                <div class="agent-node" id="node-hotel_agent" onclick="focusAgentCard('hotel_agent')">
+                    <div class="node-icon">🏨</div>
+                    <div class="node-details">
+                        <div class="node-title">Hotel Scout</div>
+                        <div class="node-sub">Finding top-rated stays</div>
+                    </div>
+                    <div class="node-badge" id="badge-hotel_agent">Ready</div>
+                </div>
+
+                <div class="flow-arrow" id="arrow-3">➔</div>
+
+                <!-- Agent Node 3: Itinerary Planner -->
+                <div class="agent-node" id="node-itinerary_agent" onclick="focusAgentCard('itinerary_agent')">
+                    <div class="node-icon">🗺️</div>
+                    <div class="node-details">
+                        <div class="node-title">Itinerary Planner</div>
+                        <div class="node-sub">Crafting daily activities</div>
+                    </div>
+                    <div class="node-badge" id="badge-itinerary_agent">Ready</div>
+                </div>
+
+                <div class="flow-arrow" id="arrow-4">➔</div>
+
+                <!-- Agent Node 4: Trip Concierge -->
+                <div class="agent-node" id="node-final_agent" onclick="focusAgentCard('final_agent')">
+                    <div class="node-icon">📋</div>
+                    <div class="node-details">
+                        <div class="node-title">Trip Concierge</div>
+                        <div class="node-sub">Organizing budget & tips</div>
+                    </div>
+                    <div class="node-badge" id="badge-final_agent">Ready</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Travel Results & Details Section -->
+        <section id="resultSection" class="result-section hidden">
+            
+            <!-- Navigation Tabs -->
+            <div class="dashboard-nav">
+                <div class="nav-tabs">
+                    <button id="tabBtnPlan" class="tab-btn active" onclick="switchTab('plan')">
+                        📖 Your Travel Plan
+                    </button>
+                    <button id="tabBtnObservability" class="tab-btn" onclick="switchTab('observability')">
+                        🔍 Behind the Scenes <span id="traceCountBadge" class="count-badge">4</span>
+                    </button>
+                    <button id="tabBtnLogs" class="tab-btn" onclick="switchTab('logs')">
+                        📝 Live Activity Log
+                    </button>
+                </div>
+
+                <div class="dashboard-actions">
+                    <button class="action-btn secondary" onclick="copyResult()" title="Copy the itinerary to clipboard">
+                        📄 Copy Plan
+                    </button>
+                    <button class="action-btn secondary" onclick="copyTraceJSON()" title="Copy raw technical details as JSON">
+                        📋 Copy Data (JSON)
+                    </button>
+                    <button class="action-btn primary" onclick="downloadPDF()" title="Save itinerary as a clean PDF">
+                        📥 Download PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Trip Summary Info Bar -->
+            <div class="meta-strip">
+                <div class="meta-item">
+                    <span class="meta-icon">🏷️</span>
+                    <span class="meta-label">Trip Reference:</span>
+                    <span id="threadInfo" class="meta-val">-</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">⚡</span>
+                    <span class="meta-label">Guides Consulted:</span>
+                    <span id="llmCallsInfo" class="meta-val">0</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">⏱️</span>
+                    <span class="meta-label">Planning Time:</span>
+                    <span id="totalTimeInfo" class="meta-val">0.0s</span>
+                </div>
+            </div>
+
+            <!-- VIEW 1: Final Travel Itinerary -->
+            <div id="viewPlan" class="view-panel active">
+                <div id="pdfContent" class="pdf-content">
+                    <h1 class="pdf-title">Your Custom AI Travel Guide</h1>
+                    <div id="resultBox" class="result-box"></div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: Behind the Scenes & Agent Thoughts -->
+            <div id="viewObservability" class="view-panel">
+                <div class="observability-header">
+                    <div>
+                        <h3>🔍 Behind the Scenes: How Your Trip Was Planned</h3>
+                        <p>Explore what each guide thought about, where they searched, and how they built your travel recommendations.</p>
+                    </div>
+                    <div class="trace-controls">
+                        <button class="small-btn" onclick="expandAllTraceCards(true)">Expand All</button>
+                        <button class="small-btn" onclick="expandAllTraceCards(false)">Collapse All</button>
+                    </div>
+                </div>
+
+                <!-- Trace Cards Container -->
+                <div id="traceCardsContainer" class="trace-cards-container">
+                    <!-- Cards will be populated by script.js -->
+                </div>
+            </div>
+
+            <!-- VIEW 3: Live Planning Activity Log -->
+            <div id="viewLogs" class="view-panel">
+                <div class="console-wrapper">
+                    <div class="console-bar">
+                        <div class="console-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <div class="console-title">📝 Real-Time Travel Planning Activity</div>
+                        <button class="console-clear-btn" onclick="clearConsole()">Clear</button>
+                    </div>
+                    <div id="consoleBody" class="console-body">
+                        <!-- Activity log lines will stream here -->
+                        <div class="log-line info"><span class="log-time">[00:00:00]</span> <span class="log-tag">[READY]</span> Travel guides initialized. Enter your trip request above to start.</div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Error Notification Banner -->
+        <section id="errorBox" class="error-box hidden"></section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>Crafted with love by <strong>VoyageCraft AI</strong> • Powered by LangGraph Multi-Agent AI, Groq, AviationStack, and Tavily</p>
+    </footer>
+
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Main JS -->
+    <script src="/static/script.js"></script>
+</body>
+</html>
+
+
